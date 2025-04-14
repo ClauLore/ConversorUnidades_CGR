@@ -8,10 +8,7 @@ namespace ConversorUnidades_CGR
     {
         static void Main(string[] args)
         {
-            var nfi = new NumberFormatInfo();
-            nfi.NumberGroupSeparator = " "; // set the group separator to a space
-            nfi.NumberDecimalSeparator = "."; // set decimal separator to comma
-
+            
             bool isAlive=true;
             do
             {
@@ -60,61 +57,8 @@ namespace ConversorUnidades_CGR
                             {
                                 selectedOption = "-1";
                             }
-                            if (Convert.ToInt32(selectedOption) >= 0 && Convert.ToInt32(selectedOption) < 6)
-                            {
-                                for (int i = 0;i < 6;i++)
-                                {
-                                    if (Convert.ToInt32(selectedOption) ==i)
-                                    {
-                                        bool isAliveCalculo=true;
-                                        do
-                                        {
-
-                                            Console.Clear() ;   
-                                            Console.WriteLine($"Ingrese la cantidad de {arrayConversionVolumen[i, 0]} para convertir a {arrayConversionVolumen[i, 1]} :");
-                                            string valor = Convert.ToString(Console.ReadLine());
-                                            //if (!valor.All(char.IsNumber))
-                                            if(!Decimal.TryParse(valor, out _))
-                                            {
-                                                Console.WriteLine("El valor ingresado es incorrecto");
-                                                Console.WriteLine("Al presionar cualquier tecla ingrese un valor correcto...");
-                                                Console.ReadKey();
-                                                isAliveCalculo = true;
-                                            }
-                                            else
-                                            {
-                                                decimal valorDec = Convert.ToDecimal(valor);
-                                                string signo = arrayConversionVolumen[i, 2];
-                                                decimal valorConversion = Decimal.Parse(arrayConversionVolumen[i, 3],NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
-                                                decimal resultado = 0;
-                                                if (signo == "/")
-                                                {
-                                                    resultado =valorDec / valorConversion;
-                                                }
-                                                else
-                                                {
-                                                    resultado=valorDec * valorConversion;
-                                                }
-
-                                                Console.WriteLine($"Resultado: {valorDec} {arrayConversionVolumen[i, 0]} = {resultado.ToString("N2", nfi)} {arrayConversionVolumen[i, 1]}");
-                                                Console.ReadKey();
-                                                isAliveCalculo = false;
-                                            }
-                                        }
-                                        while (isAliveCalculo);
-                                    }
-                                }
-                            }
-                            else if(Convert.ToInt32(selectedOption)==6)
-                            {
-                                isAliveSubMenu = false;
-                            }
-                            else
-                            {
-                                Console.WriteLine("¡Ha seleccionado un opción incorrecta!");
-                                Console.WriteLine("Al presionar cualquier tecla el menú volverá a cargar...");
-                                Console.ReadKey();
-                            }
+                            isAliveSubMenu= CalcularConversion(arrayConversionVolumen, selectedOption);
+                           
                         }
                             break;
                     case "2":
@@ -158,65 +102,78 @@ namespace ConversorUnidades_CGR
                             {
                                 selectedOption = "-1";
                             }
-                            if (Convert.ToInt32(selectedOption) >= 0 && Convert.ToInt32(selectedOption) < 12)
-                            {
-                                for (int i = 0; i < 12; i++)
-                                {
-                                    if (Convert.ToInt32(selectedOption) == i)
-                                    {
-                                        bool isAliveCalculo = true;
-                                        do
-                                        {
-
-                                            Console.Clear();
-                                            Console.WriteLine($"Ingrese la cantidad de {arrayConversionTiempo[i, 0]} para convertir a {arrayConversionTiempo[i, 1]} :");
-                                            string valor = Convert.ToString(Console.ReadLine());
-                                            //if (!valor.All(char.IsNumber))
-                                            if (!Decimal.TryParse(valor, out _))
-                                            {
-                                                Console.WriteLine("El valor ingresado es incorrecto");
-                                                Console.WriteLine("Al presionar cualquier tecla ingrese un valor correcto...");
-                                                Console.ReadKey();
-                                                isAliveCalculo = true;
-                                            }
-                                            else
-                                            {
-                                                decimal valorDec = Convert.ToDecimal(valor);
-                                                string signo = arrayConversionTiempo[i, 2];
-                                                decimal valorConversion = Decimal.Parse(arrayConversionTiempo[i, 3], NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
-                                                decimal resultado = 0;
-                                                if (signo == "/")
-                                                {
-                                                    resultado = valorDec / valorConversion;
-                                                }
-                                                else
-                                                {
-                                                    resultado = valorDec * valorConversion;
-                                                }
-
-                                                Console.WriteLine($"Resultado: {valorDec} {arrayConversionTiempo[i, 0]} = {resultado.ToString("N2", nfi)} {arrayConversionTiempo[i, 1]}");
-                                                Console.ReadKey();
-                                                isAliveCalculo = false;
-                                            }
-                                        }
-                                        while (isAliveCalculo);
-                                    }
-                                }
-                            }
-                            else if (Convert.ToInt32(selectedOption) == 12)
-                            {
-                                isAliveSubMenu = false;
-                            }
-                            else
-                            {
-                                Console.WriteLine("¡Ha seleccionado un opción incorrecta!");
-                                Console.WriteLine("Al presionar cualquier tecla el menú volverá a cargar...");
-                                Console.ReadKey();
-                            }
+                            isAliveSubMenu = CalcularConversion(arrayConversionTiempo, selectedOption);
                         }
                         break;
                     case "3":
-                        //
+                        //Tiempo
+                        isAliveSubMenu = true;
+                        string[,] arrayConversionTamañoDatos = {
+                            {"B","KB","/","1000" },
+                            {"B","MB","/","1e+6"},
+                            {"B","GB","/","1e+9"},
+                            {"B","TB","/","1e+12"},
+                            {"B","PB","/","1e+15"},
+                            {"KB","B","*","1000" },
+                            {"KB","MB","/","1000"},
+                            {"KB","GB","/","1e+6"},
+                            {"KB","TB","/","1e+9"},
+                            {"KB","PB","/","1e+12"},
+                            {"MB","B","*","1e+6" },
+                            {"MB","KB","*","1000"},
+                            {"MB","GB","/","1000"},
+                            {"MB","TB","/","1e+6"},
+                            {"MB","PB","/","1e+9"},
+                            {"GB","B","*","1e+9" },
+                            {"GB","KB","*","1e+6"},
+                            {"GB","MB","*","1000"},
+                            {"GB","TB","/","1000"},
+                            {"GB","PB","/","1e+6"},
+                            {"TB","B","*","1e+12" },
+                            {"TB","KB","*","1e+9"},
+                            {"TB","MB","*","1e+6"},
+                            {"TB","GB","*","1000"},
+                            {"TB","PB","/","1000"},
+                        };
+                        while (isAliveSubMenu)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("************************************************************************");
+                            Console.WriteLine("******CONVERSOR DE UNIDADES DE MEDIDA - MEDIDAS DE TAMAÑO DE DATOS******");
+                            Console.WriteLine("Seleccione una de las siguientes opciones:");
+                            Console.WriteLine("0. Bytes a Kilobytes");
+                            Console.WriteLine("1. Bytes a Megabytes");
+                            Console.WriteLine("2. Bytes a Gigabytes");
+                            Console.WriteLine("3. Bytes a Terabytes");
+                            Console.WriteLine("4. Bytes a Petabytes");
+                            Console.WriteLine("5. Kilobytes a Bytes");
+                            Console.WriteLine("6. Kilobytes a Megabytes");
+                            Console.WriteLine("7. Kilobytes a Gigabytes");
+                            Console.WriteLine("8. Kilobytes a Terabytes");
+                            Console.WriteLine("9. Kilobytes a Petabytes");
+                            Console.WriteLine("10. Megabytes a Bytes");
+                            Console.WriteLine("11. Megabytes a Kilobytes");
+                            Console.WriteLine("12. Megabytes a Gigabytes");
+                            Console.WriteLine("13. Megabytes a Terabytes");
+                            Console.WriteLine("14. Megabytes a Petabytes");
+                            Console.WriteLine("15. Gigabytes a Bytes");
+                            Console.WriteLine("16. Gigabytes a Kilobytes");
+                            Console.WriteLine("17. Gigabytes a Megabytes");
+                            Console.WriteLine("18. Gigabytes a Terabytes");
+                            Console.WriteLine("19. Gigabytes a Petabytes");
+                            Console.WriteLine("20. Terabytes a Bytes");
+                            Console.WriteLine("21. Terabytes a Kilobytes");
+                            Console.WriteLine("22. Terabytes a Megabytes");
+                            Console.WriteLine("23. Terabytes a Gigabytes");
+                            Console.WriteLine("24. Terabytes a Petabytes");
+                            Console.WriteLine("25. Volver al menú anterior ...");
+                            string selectedOption = Convert.ToString(Console.ReadLine());
+                            if (!selectedOption.All(char.IsNumber))
+                            {
+                                selectedOption = "-1";
+                            }
+                            isAliveSubMenu = CalcularConversion(arrayConversionTamañoDatos, selectedOption);
+                        }
                         break;
                     case "4":
                         isAlive=false;
@@ -232,8 +189,71 @@ namespace ConversorUnidades_CGR
             } while (isAlive);
 
 
-
         }
 
+        private static bool CalcularConversion(string[,] arrayConversion, string selectedOption)
+        {
+            var nfi = new NumberFormatInfo();
+            nfi.NumberGroupSeparator = " "; // set the group separator to a space
+            nfi.NumberDecimalSeparator = "."; // set decimal separator to comma
+            bool isAliveSubMenu = true;
+
+            if (Convert.ToInt32(selectedOption) >= 0 && Convert.ToInt32(selectedOption) < arrayConversion.GetLength(0))
+            {
+                for (int i = 0; i < arrayConversion.GetLength(0); i++)
+                {
+                    if (Convert.ToInt32(selectedOption) == i)
+                    {
+                        bool isAliveCalculo = true;
+                        do
+                        {
+
+                            Console.Clear();
+                            Console.WriteLine($"Ingrese la cantidad de {arrayConversion[i, 0]} para convertir a {arrayConversion[i, 1]} :");
+                            string valor = Convert.ToString(Console.ReadLine());
+                            if (!Decimal.TryParse(valor, out _))
+                            {
+                                Console.WriteLine("El valor ingresado es incorrecto");
+                                Console.WriteLine("Al presionar cualquier tecla ingrese un valor correcto...");
+                                Console.ReadKey();
+                                isAliveCalculo = true;
+                            }
+                            else
+                            {
+                                decimal valorDec = Convert.ToDecimal(valor);
+                                string signo = arrayConversion[i, 2];
+                                decimal valorConversion = Decimal.Parse(arrayConversion[i, 3], NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
+                                decimal resultado = 0;
+                                if (signo == "/")
+                                {
+                                    resultado = valorDec / valorConversion;
+                                }
+                                else
+                                {
+                                    resultado = valorDec * valorConversion;
+                                }
+
+                                Console.WriteLine($"Resultado: {valorDec} {arrayConversion[i, 0]} = {resultado.ToString("N2", nfi)} {arrayConversion[i, 1]}");
+                                Console.ReadKey();
+                                isAliveCalculo = false;
+                            }
+                        }
+                        while (isAliveCalculo);
+                    }
+                }
+            }
+            else if (Convert.ToInt32(selectedOption) == arrayConversion.GetLength(0))
+            {
+                isAliveSubMenu = false;
+            }
+            else
+            {
+                Console.WriteLine("¡Ha seleccionado un opción incorrecta!");
+                Console.WriteLine("Al presionar cualquier tecla el menú volverá a cargar...");
+                Console.ReadKey();
+            }
+
+            return isAliveSubMenu;
+        }
     }
 }
